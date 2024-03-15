@@ -1,0 +1,109 @@
+﻿@page "/Flights"
+@using System.Collections.Generic
+@using Intents
+namespace YourProject.Models
+           {
+               public class Flight { }
+               public class Reservation { }
+               public class Airport { }
+           }
+
+
+<h3>Flight Reservation System</h3>
+
+<div class="search-flights">
+    <h4>Find Flights</h4>
+    <label for="originAirport">Origin Airport:</label>
+    <input type="text" id="originAirport" @bind="originAirport" />
+
+    <label for="destinationAirport">Destination Airport:</label>
+    <input type="text" id="destinationAirport" @bind="destinationAirport" />
+
+    <label for="dayOfWeek">Day of Week:</label>
+    <input type="text" id="dayOfWeek" @bind="dayOfWeek" />
+
+    <button @onclick="FindFlights">Search Flights</button>
+</div>
+
+<div class="flight-results">
+    @if (flights != null && flights.Any())
+    {
+        <h4>Available Flights</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Flight Code</th>
+                    <th>Airline</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Cost</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var flight in flights)
+                {
+                    <tr>
+                        <td>@flight.Code</td>
+                        <td>@flight.Airline</td>
+                        <td>@flight.DayOfWeek</td>
+                        <td>@flight.Time</td>
+                        <td>@flight.Cost</td>
+                        <td><button @onclick="() => ReserveFlight(flight)">Reserve</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No flights found.</p>
+    }
+</div>
+
+<div class="make-reservation" style="display: @(showReservationForm ? "block" : "none")">
+    <h4>Make Reservation</h4>
+    <label for="passengerName">Passenger Name:</label>
+    <input type="text" id="passengerName" @bind="passengerName" />
+
+    <label for="passengerCitizenship">Passenger Citizenship:</label>
+    <input type="text" id="passengerCitizenship" @bind="passengerCitizenship" />
+
+    <button @onclick="ConfirmReservation">Confirm Reservation</button>
+</div>
+
+@code {
+    private string originAirport;
+    private string destinationAirport;
+    private string dayOfWeek;
+    private List<INFlight> flights;
+    private bool showReservationForm = false;
+    private string passengerName;
+    private string passengerCitizenship;
+    private INFlight selectedFlight;
+
+    private void FindFlights() =>
+        // Logic to find flights based on input parameters
+        // This logic will depend on the implementation of the flight management system
+        // For demonstration purposes, let's assume we have a FlightManager class
+        // with a method to find flights based on origin, destination, and day of week
+        flights = FlightManager.FindFlights(originAirport, destinationAirport, dayOfWeek);
+
+    private void ReserveFlight(INFlight flight)
+    {
+        selectedFlight = flight ?? throw new ArgumentNullException(nameof(flight));
+        showReservationForm = true;
+    }
+
+    private void ConfirmReservation()
+    {
+        // Logic to confirm reservation
+        // This will depend on how reservation data is managed in the backend
+        // For demonstration purposes, let's assume we have a ReservationManager class
+        // with a method to make reservations
+        ReservationManager.MakeReservation(selectedFlight, passengerName, passengerCitizenship);
+        showReservationForm = false;
+    }
+}
+
+
